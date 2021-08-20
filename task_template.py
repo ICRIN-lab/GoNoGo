@@ -1,4 +1,5 @@
 from psychopy import visual, gui, data, event, core
+from psychopy.visual.shape import BaseShapeStim
 import time
 
 
@@ -94,19 +95,13 @@ class TaskTemplate:
             depth=0.0
         )
 
-    def create_visual_rect(self, color, pos=(0, 0)):
-        """
-        Create a <visual.TextStim> with some default parameters so it's simpler to create visual texts
-        """
+    def create_visual_rect(self, color):
         return visual.Rect(
             win=self.win,
-            size=(0.5, 0.2),
-            units='height',
-            pos=pos,
-            ori=0,
-            color=color,
-            colorSpace='rgb',
-            opacity=1
+            width=300,
+            height=100,
+            lineColor=color,
+            fillColor=color,
         )
 
     def wait_yes(self):
@@ -145,7 +140,7 @@ class TaskTemplate:
         clock = core.Clock()
         resp = event.waitKeys(timeout, keys,  timeStamped=clock)
         if resp is None:
-            return
+            return resp
         if resp[0][0] == self.quit_code:
             self.quit_experiment()
         return resp[0]

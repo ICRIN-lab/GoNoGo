@@ -1,54 +1,62 @@
 import time
 from random import randint, choice
 import os
-from psychopy import core
+from psychopy import core, visual
 from task_template import TaskTemplate
 
 
 class GoNoGo(TaskTemplate):
-    yes_key_name = "a"
-    no_key_name = "p"
-    yes_key_code = "a"
-    no_key_code = "p"
+    yes_key_name = "espace"
+    yes_key_code = "space"
     quit_code = "q"
-    keys = ["r", "v", "b", "j", yes_key_name, quit_code]
+    keys = ["space", yes_key_name, quit_code]
     launch_example = True
     next = f"Pour passer à l'instruction suivante, appuyez sur la touche {yes_key_name}"
-    instructions = [f"Dans ce mini-jeu, appuyez sur la touche {yes_key_name} si la flèche centrale est vers la gauche,"
-                    f" et sur la touche {no_key_code} si elle est vers la droite.",
+    instructions = [f"Dans ce mini-jeu, appuyez sur la touche {yes_key_name} si la flèche centralee.",
                     "S'il-vous-plaît, n'appuyez que lorsqu'on vous le demande ou lors du mini-jeu",
-                    f"Placez vos doigts sur les touches {yes_key_name} et {no_key_name} s'il-vous-plaît",
+                    f"Placez votre index sur la touche espace s'il-vous-plaît",
                     ]
-    csv_headers = ['no_trial', 'id_candidate', 'word', 'color', 'condition', 'ans_candidate', 'good_ans', 'correct',
+    csv_headers = ['no_trial', 'id_candidate', 'condition', 'ans_candidate', 'good_ans', 'correct',
                    'practice', 'reaction_time', 'time_stamp']
 
     def task(self, no_trial, exp_start_timestamp, trial_start_timestamp, practice=False):
-        configs = {"Rouge": "red", "Vert": "green", "Bleu": "blue", "Jaune": "yellow"}
-        word = choice(list(configs.keys()))
-        color = choice(list(configs.values()))
-        seed = randint(0, 1)
+        keyboard_pressed = False
+        seed = choice([0, 1, 2, 4, 6, 8])
 
-        if seed == 0:
+        if seed % 2 == 0:
             condition = "Go"
             color = "green"
+            good_ans = "space"
         else:
             condition = "NoGo"
             color = "red"
-        self.create_visual_rect(color=color)
+            good_ans = ""
+
         self.create_visual_text("+").draw()
         self.win.flip()
-        core.wait(0.5)
-        arrows = self.create_visual_text(text=word, color=color)
-        arrows.draw()
+        core.wait(.5)
+        self.create_visual_rect(color=color).draw()
+        self.create_visual_text(condition, color="black").draw()
         self.win.flip()
-        resp, rt = self.get_response_with_time()
+        try:
+            resp, rt = self.get_response_with_time(timeout=1)
+        except (TypeError, AttributeError):
+            if condition == "NoGo":
+                resp = ""
+                rt = 1
+            else:
+                resp = ""
+                rt = 1
+        print(resp)
+
         if resp == good_ans:
             good_answer = True
         else:
             good_answer = False
-        self.update_csv(no_trial, self.participant, word, color, condition, resp, good_ans, good_answer,
+
+        self.update_csv(no_trial, self.participant, condition, resp, good_ans, good_answer,
                         practice, round(rt, 2), round(time.time() - exp_start_timestamp, 2))
-        self.create_visual_text("", color).draw()
+        self.create_visual_text("", color=color).draw()
         self.win.flip()
         rnd_time = randint(8, 14)
         core.wait(rnd_time * 10 ** -3)
