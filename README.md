@@ -9,5 +9,5 @@ This task is made a bit more difficult because there are more Go than No-go tria
 
 Sources : Gordon B, Caramazza A. Lexical decision for open- and closed-class words: Failure to replicate differential frequency sensitivity. Brain and Language. 1982;15:143–160.
 <a href="https://www.sciencedirect.com/science/article/pii/0093934X82900530?via%3Dihub"> Read here full article </a>.
-Gordon and Caramazza claimed that the go/no-go procedure resulted in better performance and data that were less noisy than data from the two-choice procedure.
+</br>Gordon and Caramazza claimed that the go/no-go procedure resulted in better performance and data that were less noisy than data from the two-choice procedure.
 
